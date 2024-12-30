@@ -1,0 +1,50 @@
+# Include environment variables
+-include .env
+
+# Define phony targets
+.PHONY: all build test install deploy-sepolia clean format interact help
+
+# Build the project
+build:
+	forge build
+
+# Run tests
+test:
+	forge test
+
+# Install dependencies
+install:
+	forge install OpenZeppelin/openzeppelin-contracts --no-commit
+	npm install ethers dotenv
+
+# Deploy the CharityPlatform contract to Sepolia network
+deploy-sepolia:
+	@forge script script/Charity.s.sol:DeployCharityPlatform \
+		--rpc-url $(SEPOLIA_RPC_URL) \
+		--private-key $(PRIVATE_KEY) \
+		--broadcast \
+		--verify \
+		--etherscan-api-key $(ETHERSCAN_API_KEY) -vvvv
+
+# Clean up build artifacts
+clean:
+	forge clean
+
+# Format the code
+format:
+	forge fmt
+
+# Interact with the deployed contract using the Node.js script
+interact:
+	node interact.js
+
+# Display help information
+help:
+	@echo "Available commands:"
+	@echo "  make build          - Build the project"
+	@echo "  make test           - Run tests"
+	@echo "  make install        - Install dependencies"
+	@echo "  make deploy-sepolia - Deploy the contract to Sepolia"
+	@echo "  make clean          - Clean build artifacts"
+	@echo "  make format         - Format the code"
+	@echo "  make interact       - Interact with the deployed contract"
