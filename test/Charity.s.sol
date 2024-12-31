@@ -1,7 +1,7 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.18;
 
-import "src/CharityPlatform.sol";  // Adjust the path as necessary
+import "src/CharityPlatform.sol"; // Adjust the path as necessary
 import "forge-std/Script.sol";
 
 contract DeployCharityPlatform is Script {

@@ -67,11 +67,7 @@ contract CharityPlatform is ReentrancyGuard, AccessControl {
     }
 
     // Function to create a campaign
-    function createCampaign(
-        string calldata _title,
-        string calldata _description,
-        uint256 _targetAmount
-    ) external {
+    function createCampaign(string calldata _title, string calldata _description, uint256 _targetAmount) external {
         if (_targetAmount == 0) {
             revert TargetAmountMustBeGreaterThanZero();
         }
@@ -105,10 +101,7 @@ contract CharityPlatform is ReentrancyGuard, AccessControl {
         }
 
         campaign.raisedAmount += msg.value;
-        campaignDonors[_campaignId].push(Donor({
-            donorAddress: msg.sender,
-            amount: msg.value
-        }));
+        campaignDonors[_campaignId].push(Donor({donorAddress: msg.sender, amount: msg.value}));
 
         if (campaign.raisedAmount >= campaign.targetAmount) {
             campaign.isCompleted = true;
@@ -128,7 +121,7 @@ contract CharityPlatform is ReentrancyGuard, AccessControl {
         campaign.raisedAmount = 0;
 
         // Transfer funds
-        (bool success, ) = payable(campaign.owner).call{value: amountToWithdraw}("");
+        (bool success,) = payable(campaign.owner).call{value: amountToWithdraw}("");
         require(success, "Funds transfer failed");
 
         emit FundsWithdrawn(_campaignId, amountToWithdraw);
