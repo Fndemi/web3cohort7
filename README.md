@@ -1,66 +1,139 @@
-## Foundry
+Charity Platform Smart Contract
 
-**Foundry is a blazing fast, portable and modular toolkit for Ethereum application development written in Rust.**
+Overview
 
-Foundry consists of:
+The Charity Platform is a decentralized application built on Ethereum using Solidity. It enables transparent and efficient fundraising for charitable campaigns. Key features include campaign creation, donations, fund withdrawals, and role-based access control.
 
--   **Forge**: Ethereum testing framework (like Truffle, Hardhat and DappTools).
--   **Cast**: Swiss army knife for interacting with EVM smart contracts, sending transactions and getting chain data.
--   **Anvil**: Local Ethereum node, akin to Ganache, Hardhat Network.
--   **Chisel**: Fast, utilitarian, and verbose solidity REPL.
+Features
 
-## Documentation
+1. Campaign Management
 
-https://book.getfoundry.sh/
+Create Campaigns: Users can create campaigns with a title, description, and target amount.
 
-## Usage
+View Campaigns: Retrieve details of specific campaigns by their ID.
 
-### Build
+Role Assignment: Campaign creators are granted the CAMPAIGN_OWNER_ROLE automatically.
 
-```shell
-$ forge build
-```
+2. Donations
 
-### Test
+Contribute Funds: Supporters can donate ETH to campaigns.
 
-```shell
-$ forge test
-```
+Donation Tracking: All donations are logged with the donor’s address and amount contributed.
 
-### Format
+Completion Check: Campaigns are marked as completed when the target amount is reached.
 
-```shell
-$ forge fmt
-```
+3. Fund Withdrawal
 
-### Gas Snapshots
+Secure Withdrawals: Only campaign owners can withdraw funds, with protection against reentrancy attacks.
 
-```shell
-$ forge snapshot
-```
+Event Logging: Withdrawals are recorded on-chain with the FundsWithdrawn event.
 
-### Anvil
+4. Role-Based Access Control
 
-```shell
-$ anvil
-```
+Roles:
 
-### Deploy
+DEFAULT_ADMIN_ROLE: Full administrative control (assigned to the deployer).
 
-```shell
-$ forge script script/Counter.s.sol:CounterScript --rpc-url <your_rpc_url> --private-key <your_private_key>
-```
+CAMPAIGN_OWNER_ROLE: Assigned to campaign creators for fund management.
 
-### Cast
+Granular Permissions: Uses OpenZeppelin’s AccessControl for secure role management.
 
-```shell
-$ cast <subcommand>
-```
+5. Security Features
 
-### Help
+Reentrancy Protection: Withdrawals are safeguarded using OpenZeppelin’s ReentrancyGuard.
 
-```shell
-$ forge --help
-$ anvil --help
-$ cast --help
-```
+Custom Errors: Replaces require statements with gas-efficient custom errors.
+
+6. Funds Management
+
+Transfer Mechanism: Uses call for transferring ETH, ensuring compatibility with evolving gas limits.
+
+Refund Safety: Prevents withdrawals if no funds are available.
+
+Design Highlights
+
+Custom Errors
+
+Improves gas efficiency and code clarity with descriptive errors like:
+
+TargetAmountMustBeGreaterThanZero
+
+DonationAmountMustBeGreaterThanZero
+
+CampaignAlreadyCompleted
+
+CampaignDoesNotExist
+
+OnlyCampaignOwnerCanWithdrawFunds
+
+NoFundsToWithdraw
+
+ReentrancyGuard
+
+Integrates OpenZeppelin’s ReentrancyGuard to mitigate vulnerabilities in fund withdrawal functions.
+
+Access Control
+
+Leverages OpenZeppelin’s AccessControl for secure role-based permissions.
+
+Fund Transfers
+
+Uses Solidity’s call method for ETH transfers, ensuring safety and compatibility.
+
+Events
+
+CampaignCreated: Logs campaign creation.
+
+DonationReceived: Logs each donation.
+
+FundsWithdrawn: Logs fund withdrawals.
+
+Smart Contract Architecture
+
+State Variables
+
+campaignCount: Tracks the total number of campaigns.
+
+campaigns: Maps campaign IDs to campaign details.
+
+campaignDonors: Maps campaign IDs to lists of donors.
+
+Modifiers
+
+onlyCampaignOwner: Ensures only the campaign owner can perform certain actions.
+
+campaignExists: Validates the existence of a campaign.
+
+How to Use
+
+Deployment
+
+Clone the repository.
+
+Use Foundry to compile and deploy the contract:
+
+forge build
+forge script script/Charity.s.sol --broadcast
+
+Interacting with the Contract
+
+Frontend: Use Ether.js to enable user interactions via a web interface.
+
+Backend Scripts: Utilize Foundry’s tools for automated tasks like deployment and testing.
+
+Future Enhancements
+
+Governance Features: Allow donors to vote on fund allocation.
+
+Enhanced Reporting: Provide detailed campaign analytics.
+
+Multi-token Support: Accept donations in various ERC-20 tokens.
+
+License
+
+This project is licensed under the MIT License.
+
+Acknowledgements
+
+Built using Solidity and Foundry, with foundational libraries from OpenZeppelin. Inspired by the potential of blockchain to enable transparency and trust in charitable systems.
+
